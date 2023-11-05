@@ -31,7 +31,6 @@ public class ProyectoEstructuras {
         long tiempoBurbuja = ordenarConBurbuja(arrBurbuja);
         System.out.println("Tiempo de ejecución (burbuja): " + tiempoBurbuja + " nanosegundos");
         System.out.println("Burbuja: " + Arrays.toString(arrBurbuja));
-        System.out.println("Complejidad (burbuja) = O(n^2)");
 
         System.out.println("----------------------------------------------------------------------");
 
@@ -40,7 +39,6 @@ public class ProyectoEstructuras {
         long tiempoSeleccion = ordenarConSeleccion(arrSeleccion);
         System.out.println("Tiempo de ejecución (selección): " + tiempoSeleccion + " nanosegundos");
         System.out.println("Selección: " + Arrays.toString(arrSeleccion));
-        System.out.println("Complejidad (selección) = O(n^2)");
 
         System.out.println("----------------------------------------------------------------------");
 
@@ -49,7 +47,6 @@ public class ProyectoEstructuras {
         long tiempoInsercion = ordenarConInsercion(arrInsercion);
         System.out.println("Tiempo de ejecución (inserción): " + tiempoInsercion + " nanosegundos");
         System.out.println("Inserción: " + Arrays.toString(arrInsercion));
-        System.out.println("Complejidad (incerción) = O(n^2)/4");
 
         System.out.println("----------------------------------------------------------------------");
 
@@ -58,7 +55,6 @@ public class ProyectoEstructuras {
         long tiempoShell = ordenarConShell(arrShell);
         System.out.println("Tiempo de ejecución (shell): " + tiempoShell + " nanosegundos");
         System.out.println("Shell: " + Arrays.toString(arrShell));
-        System.out.println("Complejidad (shell) = O(n log n)");
 
         System.out.println("----------------------------------------------------------------------");
 
@@ -67,7 +63,6 @@ public class ProyectoEstructuras {
         long tiempoMergeSort = ordenarConMergeSort(arrMergeSort);
         System.out.println("Tiempo de ejecución (Merge Sort): " + tiempoMergeSort + " nanosegundos");
         System.out.println("Merge Sort: " + Arrays.toString(arrMergeSort));
-        System.out.println("Complejidad (Merge sort) = O(n log n)");
 
         System.out.println("----------------------------------------------------------------------");
 
@@ -76,7 +71,6 @@ public class ProyectoEstructuras {
         long tiempoQuickSort = ordenarConQuickSort(arrQuickSort, 0, arrQuickSort.length - 1);
         System.out.println("Tiempo de ejecución (Quick Sort): " + tiempoQuickSort + " nanosegundos");
         System.out.println("Quick Sort: " + Arrays.toString(arrQuickSort));
-        System.out.println("Complejidad (Quick sort) = O(n^2) en el peor de los casos. O(n log n) en el promedio de los casos");
 
     }
 
@@ -85,7 +79,7 @@ public class ProyectoEstructuras {
         int[] arr = new int[n];
         Random random = new Random();
         for (int i = 0; i < n; i++) {
-            arr[i] = random.nextInt(1000);
+            arr[i] = random.nextInt(100);
         }
         return arr;
     }
@@ -106,22 +100,28 @@ public class ProyectoEstructuras {
         long startTime = System.nanoTime();
         int n = arr.length;
         int operaciones = 0;
+        int movimientos = 0;
+        int comparaciones = 0;
 
-        for (int i = 0; i < n - 1; i++) {
+        for (int i = 0; i < n - 1; i++) {;
+            operaciones += 5;
             for (int j = 0; j < n - i - 1; j++) {
-                operaciones += 1; // Comparación
-
+                operaciones += 5;
+                comparaciones++;
                 if (arr[j] > arr[j + 1]) {
-                    operaciones += 3; // Intercambio
                     int temp = arr[j];
                     arr[j] = arr[j + 1];
                     arr[j + 1] = temp;
+                    movimientos += 3;
+                    operaciones += 10;
                 }
             }
         }
 
         long endTime = System.nanoTime();
         System.out.println("Operaciones (burbuja): " + operaciones);
+        System.out.println("Comparaciones (burbuja: )" + comparaciones);
+        System.out.println("Movimientos (burbuja): " + movimientos);
         return endTime - startTime;
     }
 
@@ -130,25 +130,33 @@ public class ProyectoEstructuras {
         long startTime = System.nanoTime();
         int n = arr.length;
         int operaciones = 0;
+        int movimientos = 0;
+        int comparaciones = 0;
 
         for (int i = 0; i < n - 1; i++) {
+            operaciones += 5;
             int minIndex = i;
+            operaciones += 1;
             for (int j = i + 1; j < n; j++) {
-                operaciones += 1;
-
+                operaciones += 5;
+                comparaciones++;
                 if (arr[j] < arr[minIndex]) {
                     minIndex = j;
+                    operaciones += 3;
                 }
             }
 
-            operaciones += 3;
             int temp = arr[minIndex];
             arr[minIndex] = arr[i];
             arr[i] = temp;
+            movimientos += 3;
+            operaciones += 7;
         }
 
         long endTime = System.nanoTime();
         System.out.println("Operaciones (selección): " + operaciones);
+        System.out.println("Comparaciones (selección: )" + comparaciones);
+        System.out.println("Movimientos (selección): " + movimientos);
         return endTime - startTime;
     }
 
@@ -157,24 +165,33 @@ public class ProyectoEstructuras {
         long startTime = System.nanoTime();
         int n = arr.length;
         int operaciones = 0;
+        int movimientos = 0;
+        int comparaciones = 0;
 
         for (int i = 1; i < n; i++) {
             int key = arr[i];
             int j = i - 1;
+            operaciones += 8;
+            comparaciones++;
 
-            operaciones += 1;
             while (j >= 0 && arr[j] > key) {
-                operaciones += 2;
+
                 arr[j + 1] = arr[j];
                 j = j - 1;
+                operaciones += 11;
+                movimientos++;
+                comparaciones++;
             }
 
-            operaciones += 1;
             arr[j + 1] = key;
+            operaciones += 2;
+            movimientos++;
         }
 
         long endTime = System.nanoTime();
         System.out.println("Operaciones (inserción): " + operaciones);
+        System.out.println("Comparaciones (inserción: )" + comparaciones);
+        System.out.println("Movimientos (inserción): " + movimientos);
         return endTime - startTime;
     }
 
@@ -183,51 +200,61 @@ public class ProyectoEstructuras {
         long startTime = System.nanoTime();
         int n = arr.length;
         int operaciones = 0;
+        int movimientos = 0;
+        int comparaciones = 0;
 
         for (int gap = n / 2; gap > 0; gap /= 2) {
+            operaciones += 5;
             for (int i = gap; i < n; i++) {
+                operaciones += 4;
                 int temp = arr[i];
                 int j = i;
+                movimientos++;
+                operaciones += 3;
 
-                operaciones += 1; 
                 while (j >= gap && arr[j - gap] > temp) {
-                    operaciones += 3; 
                     arr[j] = arr[j - gap];
                     j -= gap;
+                    operaciones += 10;
+                    movimientos++;
+                    comparaciones++;
                 }
 
-                operaciones += 1; 
                 arr[j] = temp;
+                operaciones += 2;
+                movimientos++;
             }
         }
 
         long endTime = System.nanoTime();
         System.out.println("Operaciones (shell): " + operaciones);
+        System.out.println("Comparaciones (shell: )" + comparaciones);
+        System.out.println("Movimientos (shell): " + movimientos);
         return endTime - startTime;
     }
 
     // metodo Merge Sort
     private static long ordenarConMergeSort(int[] arr) {
         long startTime = System.nanoTime();
-        long operaciones = mergeSort(arr, 0, arr.length - 1);
+        long[] operaciones = new long[3]; // [Comparaciones, Movimientos, Operaciones Elementales]
+        mergeSort(arr, 0, arr.length - 1, operaciones);
         long endTime = System.nanoTime();
-        System.out.println("Operaciones (Merge Sort): " + operaciones);
+        System.out.println("Operaciones Elementales (Merge Sort): " + operaciones[2]);
+        System.out.println("Comparaciones (Merge Sort): " + operaciones[0]);
+        System.out.println("Movimientos (Merge Sort): " + operaciones[1]);
         return endTime - startTime;
     }
 
-    private static long mergeSort(int[] arr, int l, int r) {
-        long operaciones = 0;
+    private static void mergeSort(int[] arr, int l, int r, long[] operaciones) {
         if (l < r) {
             int m = (l + r) / 2;
-            operaciones += mergeSort(arr, l, m);
-            operaciones += mergeSort(arr, m + 1, r);
-            operaciones += merge(arr, l, m, r);
+            mergeSort(arr, l, m, operaciones);
+            mergeSort(arr, m + 1, r, operaciones);
+            merge(arr, l, m, r, operaciones);
         }
-        return operaciones;
     }
 
-    private static long merge(int[] arr, int l, int m, int r) {
-        long operaciones = 0;
+    private static void merge(int[] arr, int l, int m, int r, long[] operaciones) {
         int n1 = m - l + 1;
         int n2 = r - m;
 
@@ -244,7 +271,7 @@ public class ProyectoEstructuras {
         int i = 0, j = 0;
         int k = l;
         while (i < n1 && j < n2) {
-            operaciones += 1;
+            operaciones[0]++;
             if (L[i] <= R[j]) {
                 arr[k] = L[i];
                 i++;
@@ -253,61 +280,72 @@ public class ProyectoEstructuras {
                 j++;
             }
             k++;
+            operaciones[1]++;
+            operaciones[2] += 3;
         }
 
         while (i < n1) {
             arr[k] = L[i];
             i++;
             k++;
+            operaciones[1]++;
+            operaciones[2] += 2;
         }
 
         while (j < n2) {
             arr[k] = R[j];
             j++;
             k++;
+            operaciones[1]++;
+            operaciones[2] += 2;
         }
-
-        return operaciones;
     }
 
     // método Quick Sort
     private static long ordenarConQuickSort(int[] arr, int low, int high) {
         long startTime = System.nanoTime();
-        long operaciones = quickSort(arr, low, high, 0);
+        long[] contadores = {0, 0, 0}; // Índice 0 para movimientos, índice 1 para comparaciones, índice 2 para operaciones elementales
+        quickSort(arr, low, high, contadores);
         long endTime = System.nanoTime();
-        System.out.println("Operaciones (Quick Sort): " + operaciones);
+        System.out.println("Operaciones elementales (Quick Sort): " + contadores[2]);
+        System.out.println("Comparaciones (Quick Sort): " + contadores[1]);
+        System.out.println("Movimientos (Quick Sort): " + contadores[0]);
+        
+        
         return endTime - startTime;
     }
 
-    private static long quickSort(int[] arr, int low, int high, long operaciones) {
+    private static void quickSort(int[] arr, int low, int high, long[] contadores) {
         if (low < high) {
-            int pi = partition(arr, low, high);
-            operaciones++;
-            operaciones = quickSort(arr, low, pi - 1, operaciones);
-            operaciones = quickSort(arr, pi + 1, high, operaciones);
+            int pi = partition(arr, low, high, contadores);
+            quickSort(arr, low, pi - 1, contadores);
+            quickSort(arr, pi + 1, high, contadores);
         }
-        return operaciones;
     }
 
-    private static int partition(int[] arr, int low, int high) {
+    private static int partition(int[] arr, int low, int high, long[] contadores) {
         int pivot = arr[high];
         int i = low - 1;
 
         for (int j = low; j < high; j++) {
+            contadores[1]++;
             if (arr[j] < pivot) {
                 i++;
-                swap(arr, i, j);
+                swap(arr, i, j, contadores);
             }
+            contadores[2] += 1;
         }
 
-        swap(arr, i + 1, high);
+        swap(arr, i + 1, high, contadores);
         return i + 1;
     }
 
-    private static void swap(int[] arr, int i, int j) {
+    private static void swap(int[] arr, int i, int j, long[] contadores) {
         int temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
+        contadores[0] += 3; 
+        contadores[2] += 3;
     }
 
 }
