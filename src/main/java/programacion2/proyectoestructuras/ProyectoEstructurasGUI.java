@@ -62,18 +62,31 @@ public class ProyectoEstructurasGUI extends JFrame {
     }
 
     private void showSizeDialog() {
-        String sizeInput = JOptionPane.showInputDialog("Ingrese el tamaño del arreglo:");
-        try {
-            int size = Integer.parseInt(sizeInput);
-            originalArray = generarArregloAleatorio(size);
-            unsortedTextArea.setText(Arrays.toString(originalArray));
+    String sizeInput = JOptionPane.showInputDialog("Ingrese el tamaño del arreglo:");
+    try {
+        int size = Integer.parseInt(sizeInput);
 
-            // Ordenar y actualizar las secciones
-            ordenarYActualizar();
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Ingrese un número válido.");
+        if (size <= 10) {
+            // El usuario ingresa manualmente los datos
+            originalArray = new int[size];
+            for (int i = 0; i < size; i++) {
+                String elementInput = JOptionPane.showInputDialog("Ingrese el elemento " + (i + 1) + ":");
+                originalArray[i] = Integer.parseInt(elementInput);
+            }
+        } else {
+            // Se generan aleatoriamente
+            originalArray = generarArregloAleatorio(size);
         }
+
+        unsortedTextArea.setText(Arrays.toString(originalArray));
+
+        // Ordenar y actualizar las secciones
+        ordenarYActualizar();
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Ingrese un número válido.");
     }
+}
+
 
     private void ordenarYActualizar() {
         int[] arrBurbuja = Arrays.copyOf(originalArray, originalArray.length);
@@ -81,6 +94,7 @@ public class ProyectoEstructurasGUI extends JFrame {
         int[] arrInsercion = Arrays.copyOf(originalArray, originalArray.length);
         int[] arrShell = Arrays.copyOf(originalArray, originalArray.length);
         int[] arrMerge = Arrays.copyOf(originalArray, originalArray.length);
+        int[] arrQuick = Arrays.copyOf(originalArray, originalArray.length);
 
         // Obtener estadísticas del algoritmo de burbuja
         long[] estadisticasBurbuja = ordenarConBurbuja(arrBurbuja);
@@ -89,14 +103,14 @@ public class ProyectoEstructurasGUI extends JFrame {
         int comparacionesBurbuja = (int) estadisticasBurbuja[2];
         int movimientosBurbuja = (int) estadisticasBurbuja[3];
 
-        // Obtener estadísticas del algoritmo de selección
+        // Obtener estadísticas del algoritmo de burbuja
         long[] estadisticasSeleccion = ordenarConSeleccion(arrSeleccion);
         long tiempoSeleccion = estadisticasSeleccion[0];
         int operacionesSeleccion = (int) estadisticasSeleccion[1];
         int comparacionesSeleccion = (int) estadisticasSeleccion[2];
         int movimientosSeleccion = (int) estadisticasSeleccion[3];
 
-        // Obtener estadísticas del algoritmo de inserción
+        // Obtener estadísticas del algoritmo de Insercion
         long[] estadisticasInsercion = ordenarConInsercion(arrInsercion);
         long tiempoInsercion = estadisticasInsercion[0];
         int operacionesInsercion = (int) estadisticasInsercion[1];
@@ -109,19 +123,27 @@ public class ProyectoEstructurasGUI extends JFrame {
         int operacionesShell = (int) estadisticasShell[1];
         int comparacionesShell = (int) estadisticasShell[2];
         int movimientosShell = (int) estadisticasShell[3];
-        
+
         // Obtener estadísticas del algoritmo de merge
         long[] estadisticasMerge = ordenarConMergeSort(arrMerge);
         long tiempoMerge = estadisticasMerge[0];
         int operacionesMerge = (int) estadisticasMerge[1];
         int comparacionesMerge = (int) estadisticasMerge[2];
         int movimientosMerge = (int) estadisticasMerge[3];
+        
+        // Obtener estadísticas del algoritmo de quick
+        long[] estadisticasQuick = ordenarConQuickSort(arrQuick, 0, arrQuick.length - 1);
+        long tiempoQuick = estadisticasQuick[0];
+        int operacionesQuick = (int) estadisticasQuick[1];
+        int comparacionesQuick = (int) estadisticasQuick[2];
+        int movimientosQuick = (int) estadisticasQuick[3];
 
         // Actualizar las secciones
-        sortedTextArea.setText("Burbuja: " + Arrays.toString(arrBurbuja) + "\n\n Seleccion: " + Arrays.toString(arrSeleccion) + "\n\n Incersion: " + Arrays.toString(arrInsercion)
-                + "\n\n Shell: " + Arrays.toString(arrShell) + "\n\n Merge: " + Arrays.toString(arrMerge));
+        sortedTextArea.setText("Burbuja: " + Arrays.toString(arrBurbuja) + "\n\n Seleccion: " + Arrays.toString(arrSeleccion) + "\n\n Insercion: " + Arrays.toString(arrInsercion)
+                + "\n\n Shell: " + Arrays.toString(arrShell) + "\n\n Merge: " + Arrays.toString(arrMerge) + "\n\n Merge: " + Arrays.toString(arrQuick)
+        + "\n\n Quick: " + Arrays.toString(arrQuick));
 
-        // Mostrar estadísticas de ambos algoritmos
+        // Mostrar estadísticas delos algoritmos
         String estadisticasBurbujaStr = "Burbuja:\n"
                 + "Tiempo de ejecución: " + tiempoBurbuja + " nanosegundos\n"
                 + "Operaciones: " + operacionesBurbuja + "\n"
@@ -134,7 +156,7 @@ public class ProyectoEstructurasGUI extends JFrame {
                 + "Comparaciones: " + comparacionesSeleccion + "\n"
                 + "Movimientos: " + movimientosSeleccion + "\n\n";
 
-        String estadisticasInsercionStr = "Inserción:\n"
+        String estadisticasInsercionStr = "Insercion:\n"
                 + "Tiempo de ejecución: " + tiempoInsercion + " nanosegundos\n"
                 + "Operaciones: " + operacionesInsercion + "\n"
                 + "Comparaciones: " + comparacionesInsercion + "\n"
@@ -145,15 +167,20 @@ public class ProyectoEstructurasGUI extends JFrame {
                 + "Operaciones: " + operacionesShell + "\n"
                 + "Comparaciones: " + comparacionesShell + "\n"
                 + "Movimientos: " + movimientosShell + "\n\n";
-        
+
         String estadisticasMergeStr = "Merge:\n"
                 + "Tiempo de ejecución: " + tiempoMerge + " nanosegundos\n"
                 + "Operaciones: " + operacionesMerge + "\n"
                 + "Comparaciones: " + comparacionesMerge + "\n"
                 + "Movimientos: " + movimientosMerge + "\n\n";
+        
+        String estadisticasQuickStr = "Quick:\n"
+                + "Tiempo de ejecución: " + tiempoQuick + " nanosegundos\n"
+                + "Operaciones: " + operacionesQuick + "\n"
+                + "Comparaciones: " + comparacionesQuick + "\n"
+                + "Movimientos: " + movimientosQuick + "\n\n";
 
-
-        statisticsTextArea.setText("Estadísticas:\n\n" + estadisticasBurbujaStr + estadisticasSeleccionStr + estadisticasInsercionStr + estadisticasShellStr + estadisticasMergeStr);
+        statisticsTextArea.setText("Estadísticas:\n\n" + estadisticasBurbujaStr + estadisticasSeleccionStr + estadisticasInsercionStr + estadisticasShellStr + estadisticasMergeStr + estadisticasQuickStr);
 
         // Repintar la ventana
         repaint();
@@ -293,9 +320,9 @@ public class ProyectoEstructurasGUI extends JFrame {
         long endTime = System.nanoTime();
         return new long[]{endTime - startTime, operaciones, comparaciones, movimientos};
     }
-    
+
     // MERGE
-   private static long[] ordenarConMergeSort(int[] arr) {
+    private static long[] ordenarConMergeSort(int[] arr) {
         long startTime = System.nanoTime();
         long[] operaciones = new long[3]; // [Comparaciones, Movimientos, Operaciones Elementales]
         mergeSort(arr, 0, arr.length - 1, operaciones);
@@ -357,6 +384,48 @@ public class ProyectoEstructurasGUI extends JFrame {
             operaciones[1]++;
             operaciones[2] += 2;
         }
+    }
+
+    // QUICK SORT
+    private static long[] ordenarConQuickSort(int[] arr, int low, int high) {
+        long startTime = System.nanoTime();
+        long[] contadores = {0, 0, 0}; // Índice 0 para movimientos, índice 1 para comparaciones, índice 2 para operaciones elementales
+        quickSort(arr, low, high, contadores);
+        long endTime = System.nanoTime();
+        return new long[]{endTime - startTime, contadores[2], contadores[1], contadores[0]};
+    }
+
+    private static void quickSort(int[] arr, int low, int high, long[] contadores) {
+        if (low < high) {
+            int pi = partition(arr, low, high, contadores);
+            quickSort(arr, low, pi - 1, contadores);
+            quickSort(arr, pi + 1, high, contadores);
+        }
+    }
+
+    private static int partition(int[] arr, int low, int high, long[] contadores) {
+        int pivot = arr[high];
+        int i = low - 1;
+
+        for (int j = low; j < high; j++) {
+            contadores[1]++;
+            if (arr[j] < pivot) {
+                i++;
+                swap(arr, i, j, contadores);
+            }
+            contadores[2] += 1;
+        }
+
+        swap(arr, i + 1, high, contadores);
+        return i + 1;
+    }
+
+    private static void swap(int[] arr, int i, int j, long[] contadores) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+        contadores[0] += 3;
+        contadores[2] += 3;
     }
 
     @SuppressWarnings("unchecked")
