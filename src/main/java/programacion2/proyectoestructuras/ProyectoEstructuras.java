@@ -7,6 +7,13 @@ import java.util.Scanner;
 public class ProyectoEstructuras {
 
     public static void main(String[] args) {
+        
+        //Llamo a la pantalla
+        ProyectoEstructurasGUI principal = new ProyectoEstructurasGUI();
+        principal.setVisible(true);
+        principal.setLocationRelativeTo(null);
+
+        
         Scanner scanner = new Scanner(System.in);
 
         // Pedir al usuario el tamaño del arreglo
